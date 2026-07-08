@@ -6,6 +6,8 @@ The package intentionally avoids private infrastructure dependencies. It does **
 
 ## Demo Link / Installable Package
 
+- GitHub repository: <https://github.com/hobit-emnlp/hobit-emnlp>
+- Downloadable installation package: <https://github.com/hobit-emnlp/hobit-emnlp/archive/refs/heads/main.zip>
 - Installable package: this GitHub repository can be downloaded or cloned and run locally with Docker Compose.
 - Live demo URL: add the deployed URL here after deployment, if available.
 
