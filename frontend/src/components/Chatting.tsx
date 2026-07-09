@@ -70,6 +70,24 @@ const Chatting: React.FC = () => {
   }, [dispatch]);
 
   useEffect(() => {
+    const handleProfileReset = () => {
+      setChatHistory([]);
+      setError(null);
+      dispatch(setIsLoading(false));
+      dispatch(clearSent());
+      dispatch(setId(-1));
+      if (chatContainerRef.current) {
+        chatContainerRef.current.scrollTo({ top: 0 });
+      }
+    };
+
+    window.addEventListener('hobit-profile-reset', handleProfileReset);
+    return () => {
+      window.removeEventListener('hobit-profile-reset', handleProfileReset);
+    };
+  }, [dispatch]);
+
+  useEffect(() => {
     if (homeClicked && chatContainerRef.current) {
       const container = chatContainerRef.current;
       setTimeout(() => {

@@ -61,6 +61,7 @@ const ProfileBar: React.FC = () => {
       await resetProfile();
       setProfile({});
       window.dispatchEvent(new Event('hobit-profile-updated'));
+      window.dispatchEvent(new Event('hobit-profile-reset'));
     } catch (err) {
       console.error('Error while resetting profile:', err);
     } finally {
@@ -75,18 +76,24 @@ const ProfileBar: React.FC = () => {
           <FiUser className="shrink-0 text-[#750E21]" />
           <span className="truncate">{label}</span>
         </div>
-        {hasProfile(profile) && (
-          <button
-            type="button"
-            onClick={handleReset}
-            disabled={loading}
-            className="shrink-0 inline-flex items-center gap-1 rounded-md border border-gray-300 bg-white px-2 py-1 text-xs md:text-sm hover:bg-gray-100 disabled:opacity-60"
-            title={isKorean ? '저장된 프로필 초기화' : 'Reset saved profile'}
-          >
-            <FiRefreshCcw />
-            <span>{isKorean ? '초기화' : 'Reset'}</span>
-          </button>
-        )}
+        <button
+          type="button"
+          onClick={handleReset}
+          disabled={loading}
+          className="shrink-0 inline-flex items-center gap-1 rounded-md border border-gray-300 bg-white px-2 py-1 text-xs md:text-sm hover:bg-gray-100 disabled:opacity-60"
+          title={
+            hasProfile(profile)
+              ? isKorean ? '저장된 프로필과 대화 초기화' : 'Reset saved profile and chat'
+              : isKorean ? '현재 대화 지우기' : 'Clear current chat'
+          }
+        >
+          <FiRefreshCcw />
+          <span>
+            {hasProfile(profile)
+              ? isKorean ? '초기화' : 'Reset'
+              : isKorean ? '대화 지우기' : 'Clear'}
+          </span>
+        </button>
       </div>
     </div>
   );
