@@ -96,7 +96,24 @@ set USE_LLM_GENERATION=auto
 docker compose up --build
 ```
 
-Without `OPENAI_API_KEY`, `/health` reports `generation: offline-bundled-answer` and the demo remains fully reproducible without external API credentials.
+For PowerShell:
+
+```powershell
+$env:OPENAI_API_KEY="sk-..."
+$env:OPENAI_MODEL="gpt-4o-mini"
+$env:USE_LLM_GENERATION="auto"
+docker compose up --build
+```
+
+Do not commit API keys into this repository. Keep them in your shell environment, `.env` file excluded from Git, or deployment secret manager.
+
+Generation mode can be checked with:
+
+```bash
+curl http://localhost:8000/health
+```
+
+With a valid key, `/health` reports `generation: openai-compatible`; each generated answer card also includes `"generation": "openai-compatible"` in the API payload. Without `OPENAI_API_KEY`, `/health` reports `generation: offline-bundled-answer` and the demo remains fully reproducible without external API credentials.
 
 ### Local Development
 

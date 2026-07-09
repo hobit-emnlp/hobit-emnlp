@@ -227,6 +227,7 @@ def generate_with_llm(question: str, doc: dict[str, Any], profile: dict[str, Any
         "You are hoBIT, a Korean academic-advising chatbot. "
         "Answer in Korean using only the provided source evidence. "
         "Keep numbers, course names, and source-grounded requirements precise. "
+        "Preserve concrete bullet items from the evidence when they answer the user's question. "
         "If the evidence is insufficient, say that the student should confirm with the department office.\n\n"
         f"Student profile: {profile_text or 'not provided'}\n"
         f"Question: {question}\n"
@@ -261,7 +262,9 @@ def generate_with_llm(question: str, doc: dict[str, Any], profile: dict[str, Any
 
 
 def answer_cards(doc: dict[str, Any], profile: dict[str, Any], question: str = "") -> list[dict[str, Any]]:
-    text = generate_with_llm(question, doc, profile) or doc["answer_ko"]
+    generated_text = generate_with_llm(question, doc, profile)
+    text = generated_text or doc["answer_ko"]
+    generation_mode = "openai-compatible" if generated_text else "offline-bundled-answer"
     profile_bits = []
     if profile.get("department"):
         profile_bits.append(f"학과: {profile['department']}")
@@ -280,6 +283,7 @@ def answer_cards(doc: dict[str, Any], profile: dict[str, Any], question: str = "
             "url": doc.get("url", ""),
             "email": doc.get("email", ""),
             "phone": doc.get("phone", ""),
+            "generation": generation_mode,
             "sources": [
                 {
                     "source_label": doc.get("source_label", "Demo data"),
