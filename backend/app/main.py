@@ -376,6 +376,19 @@ def save_profile(req: ProfileRequest, x_session_id: str | None = Header(default=
     return {"ok": True, "profile": profile}
 
 
+@app.get("/api/v0/profile")
+def read_profile(x_session_id: str | None = Header(default=None)) -> dict[str, Any]:
+    sid = session_id(x_session_id)
+    return {"profile": get_profile(sid)}
+
+
+@app.delete("/api/v0/profile")
+def reset_profile(x_session_id: str | None = Header(default=None)) -> dict[str, Any]:
+    sid = session_id(x_session_id)
+    redis_client.delete(profile_key(sid))
+    return {"ok": True, "profile": {}}
+
+
 @app.post("/api/v0/question")
 def question(req: QuestionRequest, x_session_id: str | None = Header(default=None)) -> dict[str, Any]:
     text = req.question.strip()

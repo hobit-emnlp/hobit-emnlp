@@ -65,6 +65,7 @@ const ProfileInput: React.FC<ProfileInputProps> = ({ missingFields, onSaved }) =
       if (selections.admission_year) profileData.admission_year = parseInt(selections.admission_year);
       if (selections.student_status) profileData.student_status = selections.student_status;
       await saveProfile(profileData);
+      window.dispatchEvent(new Event('hobit-profile-updated'));
       onSaved();
     } catch (err) {
       console.error('프로필 저장 실패:', err);

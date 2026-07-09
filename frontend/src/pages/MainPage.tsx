@@ -6,6 +6,7 @@ import Input from '../components/Input';
 import AutoComplete from '../components/AutoComplete';
 import Chatting from '../components/Chatting';
 import Modal from '../components/Modal';
+import ProfileBar from '../components/ProfileBar';
 import { closeMenu } from '../redux/menuSlice';
 
 const MainPage: React.FC = () => {
@@ -20,8 +21,9 @@ const MainPage: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col h-screen overflow-hidden pt-[60px] md:pt-[70px]">
+    <div className="flex flex-col h-screen overflow-hidden pt-[98px] md:pt-[110px]">
       <Header />
+      <ProfileBar />
 
       {isModalOpen && (
         <div

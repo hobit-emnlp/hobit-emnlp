@@ -164,6 +164,26 @@ export const saveProfile = async (data: ProfileData) => {
 	}
 };
 
+export const getProfile = async () => {
+	try {
+		const response = await apiClient.get('/profile');
+		return response.data;
+	} catch (error: any) {
+		console.error('Error while fetching profile:', error);
+		throw error.response?.data || error.message;
+	}
+};
+
+export const resetProfile = async () => {
+	try {
+		const response = await apiClient.delete('/profile');
+		return response.data;
+	} catch (error: any) {
+		console.error('Error while resetting profile:', error);
+		throw error.response?.data || error.message;
+	}
+};
+
 export const getFaqById = async (id: number) => {
 	try {
 		const response = await apiClient.get('/faq', { params: { id } });
