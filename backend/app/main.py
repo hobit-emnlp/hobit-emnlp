@@ -5,6 +5,8 @@ import json
 import os
 import re
 import time
+import urllib.error
+import urllib.request
 from pathlib import Path
 from typing import Any
 
@@ -20,6 +22,10 @@ ROOT = Path(__file__).resolve().parents[1]
 DATA_DIR = ROOT / "data"
 COLLECTION = os.getenv("QDRANT_COLLECTION", "hobit_demo_documents")
 VECTOR_SIZE = 64
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+OPENAI_BASE_URL = os.getenv("OPENAI_BASE_URL", "https://api.openai.com/v1")
+OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
+USE_LLM_GENERATION = os.getenv("USE_LLM_GENERATION", "auto").lower()
 
 
 def load_json(name: str) -> Any:
@@ -212,13 +218,59 @@ def add_history(sid: str, user: str, assistant: str) -> None:
     redis_client.set(history_key(sid), json.dumps(history, ensure_ascii=False), ex=60 * 60 * 24)
 
 
-def answer_cards(doc: dict[str, Any], profile: dict[str, Any]) -> list[dict[str, Any]]:
-    text = doc["answer_ko"]
+def generate_with_llm(question: str, doc: dict[str, Any], profile: dict[str, Any]) -> str | None:
+    if not OPENAI_API_KEY or USE_LLM_GENERATION in {"0", "false", "off", "disabled"}:
+        return None
+
+    profile_text = ", ".join(f"{key}: {value}" for key, value in profile.items() if value not in (None, "", 0))
+    prompt = (
+        "You are hoBIT, a Korean academic-advising chatbot. "
+        "Answer in Korean using only the provided source evidence. "
+        "Keep numbers, course names, and source-grounded requirements precise. "
+        "If the evidence is insufficient, say that the student should confirm with the department office.\n\n"
+        f"Student profile: {profile_text or 'not provided'}\n"
+        f"Question: {question}\n"
+        f"Source title: {doc.get('source_title', doc.get('title', ''))}\n"
+        f"Evidence:\n{doc.get('answer_ko', '')}"
+    )
+    payload = {
+        "model": OPENAI_MODEL,
+        "messages": [
+            {"role": "system", "content": "You produce concise, source-grounded Korean advising answers."},
+            {"role": "user", "content": prompt},
+        ],
+        "temperature": 0.2,
+        "max_tokens": 700,
+    }
+    req = urllib.request.Request(
+        f"{OPENAI_BASE_URL.rstrip('/')}/chat/completions",
+        data=json.dumps(payload).encode("utf-8"),
+        headers={
+            "Authorization": f"Bearer {OPENAI_API_KEY}",
+            "Content-Type": "application/json",
+        },
+        method="POST",
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=20) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+        return data["choices"][0]["message"]["content"].strip()
+    except (KeyError, urllib.error.URLError, TimeoutError, json.JSONDecodeError) as exc:
+        print(f"LLM generation failed; falling back to bundled answer: {exc}")
+        return None
+
+
+def answer_cards(doc: dict[str, Any], profile: dict[str, Any], question: str = "") -> list[dict[str, Any]]:
+    text = generate_with_llm(question, doc, profile) or doc["answer_ko"]
     profile_bits = []
     if profile.get("department"):
         profile_bits.append(f"학과: {profile['department']}")
     if profile.get("admission_year"):
         profile_bits.append(f"학번: {profile['admission_year']}학번")
+    if profile.get("major_type"):
+        profile_bits.append(f"전공 유형: {profile['major_type']}")
+    if profile.get("grade"):
+        profile_bits.append(f"학년: {profile['grade']}학년")
     if profile_bits:
         text = f"입력한 프로필({', '.join(profile_bits)}) 기준입니다.\n\n{text}"
 
@@ -242,7 +294,7 @@ def answer_cards(doc: dict[str, Any], profile: dict[str, Any]) -> list[dict[str,
 
 
 def faq_from_doc(doc: dict[str, Any], question: str, profile: dict[str, Any]) -> dict[str, Any]:
-    cards = answer_cards(doc, profile)
+    cards = answer_cards(doc, profile, question)
     return {
         "id": int(doc["id"]),
         "maincategory_ko": doc.get("maincategory_ko", doc.get("category", "RAG")),
@@ -267,6 +319,9 @@ def keyword_score(query: str, doc: dict[str, Any], profile: dict[str, Any]) -> i
     for keyword in doc.get("keywords", []):
         if normalize(keyword) in q:
             score += 4
+    if any(token in q for token in ["전공 필수", "필수 과목", "전공필수", "major courses", "required major"]):
+        if doc.get("subcategory_ko") == "졸업요건":
+            score += 8
     if doc.get("department") and profile.get("department") and str(doc["department"]) == str(profile["department"]):
         score += 3
     if doc.get("admission_year") and profile.get("admission_year") and str(doc["admission_year"]) == str(profile["admission_year"]):
@@ -315,7 +370,7 @@ def retrieve(question: str, profile: dict[str, Any], limit: int = 3) -> list[dic
 
 def required_profile(question: str) -> list[str]:
     q = normalize(question)
-    if any(token in q for token in ["졸업", "graduation", "requirement", "요건"]):
+    if any(token in q for token in ["졸업", "graduation", "requirement", "요건", "전공 필수", "필수 과목", "major courses", "required major"]):
         return ["admission_year", "department"]
     if any(token in q for token in ["이중전공", "복수전공", "전공", "dual major", "double major"]):
         return ["department"]
@@ -326,7 +381,7 @@ def answer_smalltalk(text: str) -> str:
     q = normalize(text)
     if any(token in q for token in ["고마워", "thanks", "thank you"]):
         return "천만에요. 정보대학 생활이나 학사 제도에 대해 더 궁금한 점이 있으면 언제든 물어보세요."
-    if any(token in q for token in ["날씨", "점심", "심심", "기분"]):
+    if any(token in q for token in ["날씨", "점심", "심심", "기분", "힘들", "피곤", "쉬고", "공부하기"]):
         return "저는 정보대학 안내에 집중하는 데모 챗봇이라 학교생활, 공지사항, 취업, 진로, 학사 질문을 도와드릴 수 있어요."
     return "좋아요. 정보대학 학부 생활과 학사 제도에 관해 궁금한 점을 편하게 물어보세요."
 
@@ -358,6 +413,8 @@ def health() -> dict[str, Any]:
         "documents": len(DOCS),
         "qdrant_collection": COLLECTION,
         "redis": "connected",
+        "generation": "openai-compatible" if OPENAI_API_KEY else "offline-bundled-answer",
+        "openai_model": OPENAI_MODEL if OPENAI_API_KEY else None,
     }
 
 
@@ -418,13 +475,13 @@ def question(req: QuestionRequest, x_session_id: str | None = Header(default=Non
 
     sid = session_id(x_session_id)
     q_norm = normalize(text)
-    if q_norm in {"안녕", "안녕하세요", "hello", "hi"}:
+    if any(token in q_norm for token in ["안녕", "안녕하세요", "hello", "hi", "뭐 하는 챗봇"]):
         return {"faqs": None, **base_flags(is_greet=True), "id": -1}
-    if "할 수" in text or "기능" in text or "what can" in q_norm:
+    if any(token in q_norm for token in ["할 수", "기능", "어떤 질문", "무슨 질문", "what can"]):
         return {"faqs": None, **base_flags(is_able=True), "id": -1}
     if "자주" in text or "faq" in q_norm:
         return {"faqs": None, **base_flags(is_freq=True), "id": -1}
-    if any(token in q_norm for token in ["고마워", "날씨", "심심", "thanks", "thank you"]):
+    if any(token in q_norm for token in ["고마워", "날씨", "심심", "힘들", "피곤", "공부하기", "thanks", "thank you"]):
         answer = answer_smalltalk(text)
         add_history(sid, text, answer)
         return single_card_response(text, answer)

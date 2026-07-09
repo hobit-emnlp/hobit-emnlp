@@ -35,10 +35,11 @@ hoBIT answers university-life and academic-policy questions in a chat interface.
 - ability/features explanation;
 - smalltalk fallback responses;
 - campus-life retrieval over notice/career data;
+- scholarship and administrative-office FAQ retrieval;
 - profile-dependent academic advising through dual asking;
 - source cards that expose where each answer came from.
 
-The bundled dataset is intentionally small, but the runtime path still exercises Qdrant indexing/search and Redis-backed profile/session memory.
+The bundled dataset is intentionally small, but the runtime path still exercises Qdrant indexing/search and Redis-backed profile/session memory. By default the package uses offline, bundled answers for reproducibility. If `OPENAI_API_KEY` is provided, the backend can call an OpenAI-compatible chat-completions API to generate a source-grounded Korean answer from the retrieved document.
 
 ## Demo Screenshots
 
@@ -86,6 +87,17 @@ Docker Compose starts four services:
 - `qdrant`: vector index for bundled advising documents
 - `redis`: session/profile store for dual asking
 
+Optional LLM generation:
+
+```bash
+set OPENAI_API_KEY=sk-...
+set OPENAI_MODEL=gpt-4o-mini
+set USE_LLM_GENERATION=auto
+docker compose up --build
+```
+
+Without `OPENAI_API_KEY`, `/health` reports `generation: offline-bundled-answer` and the demo remains fully reproducible without external API credentials.
+
 ### Local Development
 
 Start Qdrant and Redis first, or use the Docker Compose services above.
@@ -119,14 +131,15 @@ Use the Korean UI.
 
 1. Open <http://localhost:3000>.
 2. Greeting: `안녕하세요`
-3. FAQ: click `자주 묻는 질문` or ask `자주 묻는 질문`
-4. Abilities: click `할 수 있는 일`
-5. Smalltalk: `고마워, 오늘 기분 어때?`
-6. Campus life: `최근 장학 공지와 학교생활 정보 알려줘`
-7. Career: `취업과 진로 정보는 어디서 확인해?`
-8. Dual asking: ask `졸업요건 알려줘`, select `20학번` and `컴퓨터학과`, then confirm.
+3. FAQ: `정보대 행정실 위치 알려줘.`
+4. Abilities: `너는 어떤 질문에 답할 수 있어?`
+5. Smalltalk: `오늘 공부하기 너무 힘들다.`
+6. School life notices: `최근 공지사항 알려줘.`
+7. Scholarship: `장학금 신청 조건이 궁금해.`
+8. Career: `취업 관련 프로그램 있어?`
+9. Academic advising / dual asking: ask `내 전공 필수 과목 알려줘.`, select `21학번` and `컴퓨터학과`, then confirm.
 
-The final graduation answer should mention that it is conditioned on the selected profile.
+The academic answer should be conditioned on the selected profile. For example, `20학번` returns the 2019-2020 curriculum document, while `21학번`, `22학번`, and `23학번` return the 2021-2023 curriculum document.
 
 ## System Architecture
 

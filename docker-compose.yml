@@ -29,6 +29,10 @@ services:
       QDRANT_URL: http://qdrant:6333
       REDIS_URL: redis://redis:6379/0
       QDRANT_COLLECTION: hobit_demo_documents
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      OPENAI_BASE_URL: ${OPENAI_BASE_URL:-https://api.openai.com/v1}
+      OPENAI_MODEL: ${OPENAI_MODEL:-gpt-4o-mini}
+      USE_LLM_GENERATION: ${USE_LLM_GENERATION:-auto}
     ports:
       - "8000:8000"
     depends_on:

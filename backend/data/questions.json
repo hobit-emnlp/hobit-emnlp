@@ -38,5 +38,15 @@
     "faq_id": 9,
     "question_ko": "컴퓨터학과 이중전공 가능해?",
     "question_en": "Can CSE students apply for a dual major?"
+  },
+  {
+    "faq_id": 10,
+    "question_ko": "정보대 행정실 위치 알려줘.",
+    "question_en": "Where is the College of Informatics office?"
+  },
+  {
+    "faq_id": 11,
+    "question_ko": "장학금 신청 조건이 궁금해.",
+    "question_en": "What are the scholarship application requirements?"
   }
 ]
