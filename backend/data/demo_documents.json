@@ -11,12 +11,12 @@
     "admission_year": 20,
     "sample_question_ko": "20학번 컴퓨터학과 졸업요건 알려줘",
     "keywords": ["졸업", "졸업요건", "컴퓨터학과", "20학번", "교육과정표"],
-    "answer_ko": "컴퓨터학과 20학번은 본인 학번의 교육과정표를 기준으로 전공필수, 전공선택, 교양, 졸업요구조건을 확인해야 합니다. 데모 데이터 기준으로는 교육과정표 확인, 졸업사정표 점검, 부족 학점 확인, 행정팀 상담 순서로 확인하는 흐름을 보여줍니다.\n\n정확한 실제 졸업 사정은 학교 포털과 학과 행정팀 안내를 기준으로 확인해야 합니다.",
-    "url": "https://info.korea.ac.kr/",
+    "answer_ko": "컴퓨터학과 20학번은 정보대학의 2019-2020학번 교육과정표 기준으로 총 130학점 이상을 취득해야 합니다.\n\n이수 구분별 기준은 다음과 같습니다.\n- 교양: 31학점 이상\n- 기본전공: 전공필수 18학점, 전공선택 24학점 이상\n- 기본전공 필수 6과목: 자료구조, 알고리즘, 컴퓨터구조, 운영체제, 컴퓨터네트워크, 데이터베이스\n- 심화전공: 전공선택 30학점 이상\n- 일반선택: 27학점 이상\n\n공통 졸업요구조건도 함께 충족해야 합니다.\n- 제2전공 이수 의무(학사편입자는 제외)\n- 한자자격증 의무 없음\n- 공인영어 성적: TOEIC 650, TOEFL PBT 530/CBT 197/IBT 74, TOSEL(A) 512, TEPS 571, IELTS 5.5 중 택 1\n- 영어(원어/외국어)강의 3과목 이수\n\n복수전공, 이중전공, 편입 여부에 따라 전공 이수학점이 달라질 수 있으므로 최종 졸업사정은 포털 졸업학점과 학과 행정팀 안내로 확인해야 합니다.",
+    "url": "https://info.korea.ac.kr/info/under/computer_Curriculum.do?article.offset=0&articleLimit=10&articleNo=259280&mode=view&totalBoardNo=&totalNoticeYn=N",
     "email": "mee337@korea.ac.kr",
     "phone": "02-3290-4132",
-    "source_label": "Demo curriculum data",
-    "source_title": "정보대학 학부 교육과정표 데모"
+    "source_label": "Official curriculum page",
+    "source_title": "컴퓨터학과 교육과정표(2019~2020학년도)"
   },
   {
     "id": 2,
