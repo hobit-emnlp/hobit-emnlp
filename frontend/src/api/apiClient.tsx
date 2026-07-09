@@ -8,7 +8,7 @@ const apiClient = axios.create({
 	headers: {
 		'Content-Type': 'application/json',
 	},
-	withCredentials: true,
+	withCredentials: false,
 });
 
 // 모든 요청에 X-Session-ID 헤더 자동 주입

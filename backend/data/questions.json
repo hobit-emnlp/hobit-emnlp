@@ -18,5 +18,20 @@
     "faq_id": 5,
     "question_ko": "포스터를 게시하고 싶은데 어떻게 해야 하나요?",
     "question_en": "How can I post a poster in the building?"
+  },
+  {
+    "faq_id": 6,
+    "question_ko": "최근 장학 공지 알려줘",
+    "question_en": "Show me recent scholarship notices."
+  },
+  {
+    "faq_id": 7,
+    "question_ko": "취업 정보는 어디서 확인해?",
+    "question_en": "Where can I find career and job information?"
+  },
+  {
+    "faq_id": 8,
+    "question_ko": "컴퓨터학과 이중전공 가능해?",
+    "question_en": "Can CSE students apply for a dual major?"
   }
 ]
