@@ -20,6 +20,25 @@
   },
   {
     "id": 2,
+    "title": "컴퓨터학과 21-23학번 졸업요건",
+    "category": "졸업",
+    "maincategory_ko": "졸업",
+    "maincategory_en": "Graduation",
+    "subcategory_ko": "졸업요건",
+    "subcategory_en": "Graduation requirements",
+    "department": "컴퓨터학과",
+    "admission_years": [21, 22, 23],
+    "sample_question_ko": "21학번 컴퓨터학과 졸업요건 알려줘",
+    "keywords": ["졸업", "졸업요건", "컴퓨터학과", "21학번", "22학번", "23학번", "교육과정표"],
+    "answer_ko": "컴퓨터학과 21-23학번은 정보대학의 2021-2023학번 교육과정표 기준으로 총 130학점 이상을 취득해야 합니다.\n\n이수 구분별 기준은 다음과 같습니다.\n- 교양: 19학점 이상\n- 학문의 기초: 12학점 이상\n- 기본전공: 42학점 이상(전공필수 18학점, 전공선택 24학점)\n- 기본전공 필수 6과목: 자료구조, 알고리즘, 컴퓨터구조, 운영체제, 컴퓨터네트워크, 인공지능\n- 심화전공: 전공선택 30학점 이상\n- 일반선택: 27학점 이상\n\n공통 졸업요구조건도 함께 충족해야 합니다.\n- 제2전공 이수 의무(학사편입자는 제외)\n- 인권과 성평등 교육 이수(재학 기간 중 최대 4회, 1년 단위 제공)\n- 공인영어 성적: TOEIC 650, TOEFL PBT 530/CBT 197/IBT 74, TOSEL(A) 512, TEPS 571, New TEPS 245, IELTS 5.5 중 택 1\n- 영어(원어/외국어)강의 3과목 이수\n\n복수전공, 이중전공, 편입 여부에 따라 전공 이수학점이 달라질 수 있으므로 최종 졸업사정은 포털 졸업학점과 학과 행정팀 안내로 확인해야 합니다.",
+    "url": "https://info.korea.ac.kr/info/under/computer_Curriculum.do?article.offset=0&articleLimit=10&articleNo=259292&mode=view&totalBoardNo=&totalNoticeYn=N",
+    "email": "mee337@korea.ac.kr",
+    "phone": "02-3290-4132",
+    "source_label": "Official curriculum page",
+    "source_title": "컴퓨터학과 교육과정표(2021-2023학년도)"
+  },
+  {
+    "id": 3,
     "title": "데이터과학과 졸업요건",
     "category": "졸업",
     "maincategory_ko": "졸업",
@@ -37,7 +56,7 @@
     "source_title": "데이터과학과 교육과정 데모"
   },
   {
-    "id": 3,
+    "id": 4,
     "title": "수강신청 정정 안내",
     "category": "수업",
     "maincategory_ko": "수업",
@@ -54,7 +73,7 @@
     "source_title": "수강신청 FAQ 데모"
   },
   {
-    "id": 4,
+    "id": 5,
     "title": "외국인 학생 상담 안내",
     "category": "상담",
     "maincategory_ko": "상담",
@@ -71,7 +90,7 @@
     "source_title": "외국인 학생 상담 FAQ 데모"
   },
   {
-    "id": 5,
+    "id": 6,
     "title": "포스터 게시 안내",
     "category": "생활",
     "maincategory_ko": "생활",
@@ -88,7 +107,7 @@
     "source_title": "포스터 게시 FAQ 데모"
   },
   {
-    "id": 6,
+    "id": 7,
     "title": "장학 공지사항 확인",
     "category": "공지사항",
     "maincategory_ko": "학교생활",
@@ -105,7 +124,7 @@
     "source_title": "정보대학 학부 공지사항 데모"
   },
   {
-    "id": 7,
+    "id": 8,
     "title": "취업 및 진로 정보",
     "category": "취업/진로",
     "maincategory_ko": "학교생활",
@@ -122,7 +141,7 @@
     "source_title": "취업/진로 안내 데모"
   },
   {
-    "id": 8,
+    "id": 9,
     "title": "이중전공과 복수전공 상담",
     "category": "학사",
     "maincategory_ko": "학사",

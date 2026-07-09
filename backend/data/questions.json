@@ -5,32 +5,37 @@
     "question_en": "What are the graduation requirements for a 2020 CSE student?"
   },
   {
-    "faq_id": 3,
+    "faq_id": 2,
+    "question_ko": "21학번 컴퓨터학과 졸업요건 알려줘",
+    "question_en": "What are the graduation requirements for a 2021 CSE student?"
+  },
+  {
+    "faq_id": 4,
     "question_ko": "수강신청 기간에 신청을 못했어요",
     "question_en": "I missed course registration. What should I do?"
   },
   {
-    "faq_id": 4,
+    "faq_id": 5,
     "question_ko": "외국인 학생 상담은 어디서 받아요?",
     "question_en": "Where can international students get advising?"
   },
   {
-    "faq_id": 5,
+    "faq_id": 6,
     "question_ko": "포스터를 게시하고 싶은데 어떻게 해야 하나요?",
     "question_en": "How can I post a poster in the building?"
   },
   {
-    "faq_id": 6,
+    "faq_id": 7,
     "question_ko": "최근 장학 공지 알려줘",
     "question_en": "Show me recent scholarship notices."
   },
   {
-    "faq_id": 7,
+    "faq_id": 8,
     "question_ko": "취업 정보는 어디서 확인해?",
     "question_en": "Where can I find career and job information?"
   },
   {
-    "faq_id": 8,
+    "faq_id": 9,
     "question_ko": "컴퓨터학과 이중전공 가능해?",
     "question_en": "Can CSE students apply for a dual major?"
   }

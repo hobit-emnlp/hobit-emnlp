@@ -267,11 +267,30 @@ def keyword_score(query: str, doc: dict[str, Any], profile: dict[str, Any]) -> i
     for keyword in doc.get("keywords", []):
         if normalize(keyword) in q:
             score += 4
-    for field in ("department", "admission_year"):
-        expected = doc.get(field)
-        if expected and profile.get(field) and str(expected) == str(profile[field]):
+    if doc.get("department") and profile.get("department") and str(doc["department"]) == str(profile["department"]):
+        score += 3
+    if doc.get("admission_year") and profile.get("admission_year") and str(doc["admission_year"]) == str(profile["admission_year"]):
+        score += 3
+    if doc.get("admission_years") and profile.get("admission_year"):
+        if int(profile["admission_year"]) in [int(year) for year in doc["admission_years"]]:
             score += 3
     return score
+
+
+def matches_profile(doc: dict[str, Any], profile: dict[str, Any]) -> bool:
+    department = profile.get("department")
+    if doc.get("department") and department and str(doc["department"]) != str(department):
+        return False
+
+    admission_year = profile.get("admission_year")
+    if doc.get("admission_year") and admission_year and int(doc["admission_year"]) != int(admission_year):
+        return False
+    if doc.get("admission_years") and admission_year:
+        years = [int(year) for year in doc["admission_years"]]
+        if int(admission_year) not in years:
+            return False
+
+    return True
 
 
 def retrieve(question: str, profile: dict[str, Any], limit: int = 3) -> list[dict[str, Any]]:
@@ -279,13 +298,15 @@ def retrieve(question: str, profile: dict[str, Any], limit: int = 3) -> list[dic
     hits = qdrant.query_points(
         collection_name=COLLECTION,
         query=query_vec,
-        limit=max(limit, 5),
+        limit=max(limit, 10),
         with_payload=True,
     ).points
 
     ranked: list[tuple[float, dict[str, Any]]] = []
     for hit in hits:
         doc = dict(hit.payload or {})
+        if not matches_profile(doc, profile):
+            continue
         score = float(hit.score or 0.0) + keyword_score(question, doc, profile)
         ranked.append((score, doc))
     ranked.sort(key=lambda item: item[0], reverse=True)
