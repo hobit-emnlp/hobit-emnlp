@@ -26,6 +26,7 @@ OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 OPENAI_BASE_URL = os.getenv("OPENAI_BASE_URL", "https://api.openai.com/v1")
 OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
 USE_LLM_GENERATION = os.getenv("USE_LLM_GENERATION", "auto").lower()
+IN_MEMORY_FALLBACK = os.getenv("HOBIT_IN_MEMORY_FALLBACK", "").lower() in {"1", "true", "yes", "on"}
 
 
 def load_json(name: str) -> Any:
@@ -35,6 +36,31 @@ def load_json(name: str) -> Any:
 
 DOCS: list[dict[str, Any]] = load_json("demo_documents.json")
 QUESTIONS: list[dict[str, Any]] = load_json("questions.json")
+
+
+class InMemoryRedis:
+    def __init__(self) -> None:
+        self.hashes: dict[str, dict[str, str]] = {}
+        self.values: dict[str, str] = {}
+
+    def hgetall(self, key: str) -> dict[str, str]:
+        return dict(self.hashes.get(key, {}))
+
+    def hset(self, key: str, mapping: dict[str, str]) -> None:
+        self.hashes.setdefault(key, {}).update(mapping)
+
+    def expire(self, key: str, seconds: int) -> None:
+        return None
+
+    def get(self, key: str) -> str | None:
+        return self.values.get(key)
+
+    def set(self, key: str, value: str, ex: int | None = None) -> None:
+        self.values[key] = value
+
+    def delete(self, key: str) -> None:
+        self.hashes.pop(key, None)
+        self.values.pop(key, None)
 
 
 def connect_qdrant() -> QdrantClient:
@@ -65,8 +91,8 @@ def connect_redis() -> redis.Redis:
     raise RuntimeError(f"Redis is not available at {url}: {last_error}")
 
 
-qdrant = connect_qdrant()
-redis_client = connect_redis()
+qdrant = None if IN_MEMORY_FALLBACK else connect_qdrant()
+redis_client = InMemoryRedis() if IN_MEMORY_FALLBACK else connect_redis()
 
 
 app = FastAPI(
@@ -138,6 +164,8 @@ def doc_text(doc: dict[str, Any]) -> str:
 
 
 def ensure_qdrant_data() -> None:
+    if qdrant is None:
+        return
     collections = {c.name for c in qdrant.get_collections().collections}
     if COLLECTION not in collections:
         qdrant.create_collection(
@@ -354,6 +382,17 @@ def matches_profile(doc: dict[str, Any], profile: dict[str, Any]) -> bool:
 
 def retrieve(question: str, profile: dict[str, Any], limit: int = 3) -> list[dict[str, Any]]:
     query_vec = embed_text(question)
+    if qdrant is None:
+        ranked = []
+        for doc in DOCS:
+            if not matches_profile(doc, profile):
+                continue
+            doc_vec = embed_text(doc_text(doc))
+            similarity = sum(q * d for q, d in zip(query_vec, doc_vec))
+            ranked.append((similarity + keyword_score(question, doc, profile), doc))
+        ranked.sort(key=lambda item: item[0], reverse=True)
+        return [doc for _, doc in ranked[:limit]]
+
     hits = qdrant.query_points(
         collection_name=COLLECTION,
         query=query_vec,
@@ -448,10 +487,10 @@ def profile_response(question: str, profile: dict[str, Any]) -> dict[str, Any]:
 def health() -> dict[str, Any]:
     return {
         "status": "ok",
-        "mode": "qdrant-redis-demo",
+        "mode": "in-memory-demo" if IN_MEMORY_FALLBACK else "qdrant-redis-demo",
         "documents": len(DOCS),
         "qdrant_collection": COLLECTION,
-        "redis": "connected",
+        "redis": "in-memory" if IN_MEMORY_FALLBACK else "connected",
         "generation": "openai-compatible" if OPENAI_API_KEY else "offline-bundled-answer",
         "openai_model": OPENAI_MODEL if OPENAI_API_KEY else None,
     }

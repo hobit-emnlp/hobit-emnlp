@@ -131,6 +131,14 @@ set REDIS_URL=redis://localhost:6379/0
 uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 ```
 
+If Qdrant/Redis are not available and you only need a local UI/demo capture run, start the backend with the in-memory fallback:
+
+```powershell
+$env:HOBIT_IN_MEMORY_FALLBACK="1"
+$env:USE_LLM_GENERATION="off"
+uvicorn app.main:app --host 127.0.0.1 --port 8000
+```
+
 Frontend:
 
 ```bash
