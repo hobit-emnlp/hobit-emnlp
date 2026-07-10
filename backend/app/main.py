@@ -409,6 +409,41 @@ def single_card_response(question: str, answer: str, category: str = "대화") -
     return {"faqs": [faq_from_doc(doc, question, {})], **base_flags(is_smalltalk=True), "id": -1}
 
 
+def profile_response(question: str, profile: dict[str, Any]) -> dict[str, Any]:
+    if profile:
+        lines = ["현재 세션에 저장된 프로필은 다음과 같습니다."]
+        if profile.get("department"):
+            lines.append(f"- 학과: {profile['department']}")
+        if profile.get("admission_year"):
+            lines.append(f"- 학번: {profile['admission_year']}학번")
+        if profile.get("major_type"):
+            lines.append(f"- 전공 유형: {profile['major_type']}")
+        if profile.get("grade"):
+            lines.append(f"- 학년: {profile['grade']}학년")
+        if profile.get("student_status"):
+            lines.append(f"- 학적 상태: {profile['student_status']}")
+        answer = "\n".join(lines)
+    else:
+        answer = "현재 세션에 저장된 프로필이 없습니다. 학번/학과가 필요한 질문을 하면 hoBIT이 먼저 필요한 정보를 물어봅니다."
+
+    doc = {
+        "id": 16,
+        "title": "프로필 조회 안내",
+        "category": "프로필",
+        "maincategory_ko": "프로필",
+        "maincategory_en": "Profile",
+        "subcategory_ko": "사용자 프로필",
+        "subcategory_en": "User profile",
+        "answer_ko": answer,
+        "url": "",
+        "email": "",
+        "phone": "",
+        "source_label": "Redis session profile",
+        "source_title": "사용자 프로필 상태",
+    }
+    return {"faqs": [faq_from_doc(doc, question, {})], **base_flags(), "id": -1}
+
+
 @app.get("/health")
 def health() -> dict[str, Any]:
     return {
@@ -491,6 +526,8 @@ def question(req: QuestionRequest, x_session_id: str | None = Header(default=Non
         return single_card_response(text, answer)
 
     profile = get_profile(sid)
+    if any(token in q_norm for token in ["내 프로필", "프로필 알려", "tell me my profile", "my profile"]):
+        return profile_response(text, profile)
     missing = [field for field in required_profile(text) if profile.get(field) in (None, "", 0)]
     if missing:
         return {"faqs": None, **base_flags(needs_profile=True, missing_fields=missing), "id": -1}

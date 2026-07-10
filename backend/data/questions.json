@@ -48,5 +48,35 @@
     "faq_id": 11,
     "question_ko": "장학금 신청 조건이 궁금해.",
     "question_en": "What are the scholarship application requirements?"
+  },
+  {
+    "faq_id": 12,
+    "question_ko": "등록금 납부 기간 알려줘.",
+    "question_en": "When is the tuition payment period?"
+  },
+  {
+    "faq_id": 13,
+    "question_ko": "정보대 동아리 추천해줘.",
+    "question_en": "Can you recommend student clubs?"
+  },
+  {
+    "faq_id": 14,
+    "question_ko": "요즘 채용 중인 회사 알려줘.",
+    "question_en": "Which companies are hiring now?"
+  },
+  {
+    "faq_id": 15,
+    "question_ko": "최근 공지사항 출처 포함해서 알려줘.",
+    "question_en": "Show me the latest announcements with sources."
+  },
+  {
+    "faq_id": 16,
+    "question_ko": "내 프로필 알려줘.",
+    "question_en": "Tell me my profile."
+  },
+  {
+    "faq_id": 17,
+    "question_ko": "추천 검색어와 메뉴 검색 결과를 비교해줘.",
+    "question_en": "Compare menu search and suggested lexical search results."
   }
 ]

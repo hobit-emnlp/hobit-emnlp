@@ -158,6 +158,24 @@ Use the Korean UI.
 
 The academic answer should be conditioned on the selected profile. For example, `20학번` returns the 2019-2020 curriculum document, while `21학번`, `22학번`, and `23학번` return the 2021-2023 curriculum document.
 
+## Demo Artifact Export
+
+After the backend is running, the 12 EMNLP demo scenarios can be exported as reusable website assets:
+
+```powershell
+python scripts\export_demo_actuals.py `
+  --base-url http://127.0.0.1:8000 `
+  --out-dir C:\path\to\2026-emnlp-demo\resources\demo\actual
+```
+
+Each scenario folder contains:
+
+- `response.json`: raw backend response and profile probe metadata;
+- `answer.md`: human-readable query, source, generation mode, and answer;
+- `answer_card.png`: rendered answer card for the demo project page.
+
+The export script covers greeting, ability menu, FAQ, smalltalk, academic tuition, school-life club recommendation, user-based RAG, profile display, profile-based graduation RAG, time-based hiring RAG, source-based announcements, and MySQL-style lexical search comparison.
+
 ## System Architecture
 
 ```mermaid
