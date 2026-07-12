@@ -1,11 +1,11 @@
 # Datasets
 
-Four evaluation tracks were constructed for hoBIT-AX, each targeting a distinct capability
+Four evaluation tracks were constructed for hoBIT, each targeting a distinct capability
 of the proFILL profile-aware RAG pipeline.
 
 | Track | Size | Purpose |
 |---|---:|---|
-| **Profile-based Indexing** | — | Static offline indexing over profile-conditioned document facets |
+| **Profile-based Indexing** | 951 chunks | Static offline indexing over profile-conditioned document facets (`hobit_static` 689 + `hobit_dynamic` 262) |
 | **Intent Routing** | 1,600 | 5-class routing (greeting / ability / faq / smalltalk / academic) |
 | **Profile-grounded QA** | 1,800 | Verifiable QA under known student profiles |
 | **Open-ended Advising** | 1,200 | Open-ended retrieval quality without ground-truth documents |
@@ -15,7 +15,7 @@ from real hoBIT RASA deployment logs (2024–2025) as seed material.
 
 ---
 
-## 1. Profile-based Indexing
+## 1. Profile-based Indexing (n=951 chunks)
 
 <p align="center">
   <img src="assets/datasets/profile_based_indexing.png" alt="Profile-based indexing overview" width="700">
@@ -26,6 +26,11 @@ facets (department, admission year, major type, grade, student status) so that o
 retrieval can restrict the candidate space using hard filters before dense/sparse scoring.
 Unset facets remain `null` so that generic administrative documents remain retrievable
 by any student, while curriculum tables narrow to the correct cohort.
+
+Two collections make up the profile-tagged corpus:
+
+- `hobit_static` — 689 chunks (regulations, curriculum tables, static advising documents)
+- `hobit_dynamic` — 262 chunks (notices, career postings, time-sensitive documents)
 
 ---
 
@@ -79,11 +84,32 @@ tracks are complementary and non-overlapping.
 
 Anchor validation against 797 real user log utterances:
 
-| Axis | Value | Interpretation |
-|---|---:|---|
-| Category coverage | **14 / 15 (93.3%)** | Practical full coverage |
-| Pearson r (top-8 ratios) | **0.65** | Strong distributional alignment with real logs |
-| Semantic coverage @ θ=0.5 | **82.4%** | Dense embedding-space overlap under `text-embedding-3-small` — the same model used by the deployed Qdrant retrieval index |
+<table>
+  <thead>
+    <tr>
+      <th width="30%">Axis</th>
+      <th width="18%">Value</th>
+      <th>Interpretation</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Category coverage</td>
+      <td><b>14 / 15 (93.3%)</b></td>
+      <td>Practical full coverage</td>
+    </tr>
+    <tr>
+      <td>Pearson r (top-8 ratios)</td>
+      <td><b>0.65</b></td>
+      <td>Strong distributional alignment with real logs</td>
+    </tr>
+    <tr>
+      <td>Semantic coverage @ θ=0.5</td>
+      <td><b>82.4%</b></td>
+      <td>Dense embedding-space overlap under <code>text-embedding-3-small</code> — the same model used by the deployed Qdrant retrieval index</td>
+    </tr>
+  </tbody>
+</table>
 
 The `text-embedding-3-small` overlap is retrieval-relevant, not merely surface-lexical,
 because the deployed hoBIT retrieval index uses the same embedding model.

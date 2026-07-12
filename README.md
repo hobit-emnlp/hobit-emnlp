@@ -1,9 +1,8 @@
 # 2026-EMNLP-DEMO
 
-**hoBIT-AX with proFILL — Profile-Aware RAG for Academic Advising**
 
 <p align="center">
-  <img src="docs/assets/intro.png" alt="hoBIT-AX intro" width="720">
+  <img src="docs/assets/intro.png" alt="hoBIT intro" width="720">
 </p>
 
 <p align="center">
@@ -15,7 +14,7 @@
   <img alt="Redis" src="https://img.shields.io/badge/session_cache-Redis-D82C20">
 </p>
 
-hoBIT-AX extends the existing rule-based hoBIT chatbot (Korea University College of
+We transform the existing rule-based hoBIT chatbot (Korea University College of
 Informatics) with **proFILL** — a profile-aware RAG methodology. Each answer is
 conditioned on the student's structured profile (department, admission year, major
 type, grade, status), so questions like "please tell me my required major courses" resolve to the correct year-specific curriculum table rather than a generic response.
@@ -54,7 +53,7 @@ predictable.
 ## Architecture
 
 <p align="center">
-  <img src="docs/assets/overall_architecture.png" alt="hoBIT-AX overall architecture" width="800">
+  <img src="docs/assets/overall_architecture.png" alt="hoBIT overall architecture" width="800">
 </p>
 
 proFILL is built on two layers:
@@ -79,6 +78,28 @@ merely reshaping the LLM prompt.
 </p>
 
 The React UI preserves hoBIT's original interaction patterns. When the academic path requires a profile, the UI presents a card-based profile probe, and the answer is regenerated grounded on the updated profile with cited source tags (`[S1]`, `[S2]`, …).
+
+---
+
+## Repository Layout
+
+```text
+.
+├── backend/             # FastAPI, Redis session logic, Qdrant retrieval, bundled demo data
+├── frontend/            # React hoBIT chat UI
+├── docs/
+│   ├── assets/          # Figures used in this README
+│   ├── datasets.md      # Evaluation dataset documentation (4 tracks)
+│   └── llm_prompt_judge.md   # LLM judge prompts (Top-3 Precision, Answer Completeness)
+├── scripts/             # Smoke-test helper scripts
+├── docker-compose.yml   # One-command installable demo
+└── README.md
+```
+
+## Documentation
+
+- [`docs/datasets.md`](docs/datasets.md) — Evaluation datasets (Profile-based Indexing · Intent Routing · Profile-grounded QA · Open-ended Advising)
+- [`docs/llm_prompt_judge.md`](docs/llm_prompt_judge.md) — LLM judge prompts (Top-3 Retrieval Precision, Answer Completeness [GEval])
 
 ---
 
@@ -171,26 +192,6 @@ npm start
 ```
 
 The frontend uses `REACT_APP_HOBIT_BACKEND_ENDPOINT`, defaulting to `http://localhost:8000`.
-
-## Repository Layout
-
-```text
-.
-├── backend/             # FastAPI, Redis session logic, Qdrant retrieval, bundled demo data
-├── frontend/            # React hoBIT chat UI
-├── docs/
-│   ├── assets/          # Figures used in this README
-│   ├── datasets.md      # Evaluation dataset documentation (4 tracks)
-│   └── llm_prompt_judge.md   # LLM judge prompts (Top-3 Precision, Answer Completeness)
-├── scripts/             # Smoke-test helper scripts
-├── docker-compose.yml   # One-command installable demo
-└── README.md
-```
-
-## Documentation
-
-- [`docs/datasets.md`](docs/datasets.md) — Evaluation datasets (Profile-based Indexing · Intent Routing · Profile-grounded QA · Open-ended Advising)
-- [`docs/llm_prompt_judge.md`](docs/llm_prompt_judge.md) — LLM judge prompts (Top-3 Retrieval Precision, Answer Completeness [GEval])
 
 ## API Smoke Test
 

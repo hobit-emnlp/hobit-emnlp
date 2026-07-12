@@ -1,6 +1,6 @@
 # System Prompt & LLM Judge Prompts
 
-This document collects the two categories of prompts used by hoBIT-AX:
+This document collects the two categories of prompts used by hoBIT:
 
 - **§1 RAG runtime system prompt** — sent to the answering LLM at every `/chat` request.
 - **§2–§3 LLM judge prompts** — used at evaluation time to score generated answers.
@@ -33,7 +33,7 @@ the paper tables.
 ## 1. RAG runtime system prompt
 
 Sent to the answering LLM at every `/chat` request. The system message defines
-hoBIT-AX's role, grounding rules, entity-disambiguation guards, profile-usage
+hoBIT's role, grounding rules, entity-disambiguation guards, profile-usage
 constraints, curriculum-lookup rules, and citation format. A user message is
 appended with the retrieved documents and the student's question.
 
@@ -182,7 +182,7 @@ The three per-chunk LLM calls are issued in parallel via `asyncio.gather`.
 Built on deepeval's `GEval` framework. `GEval` takes a natural-language criteria
 string and evaluates the target case by prompting the judge model with that
 criteria plus the case fields; it returns a 0–1 score. Because the criteria is
-plain text, we specialize it for hoBIT-AX with retrieval-conditional rules.
+plain text, we specialize it for hoBIT with retrieval-conditional rules.
 
 **Rationale.** Penalizing incomplete answers only makes sense when retrieval
 provides enough evidence. A retrieval-empty case where the model correctly
