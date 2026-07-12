@@ -41,7 +41,7 @@ hoBIT answers university-life and academic-policy questions in a chat interface.
 
 The bundled dataset is intentionally small, but the runtime path still exercises Qdrant indexing/search and Redis-backed profile/session memory. By default the package uses offline, bundled answers for reproducibility. If `OPENAI_API_KEY` is provided, the backend can call an OpenAI-compatible chat-completions API to generate a source-grounded Korean answer from the retrieved document.
 
-## Demo Screenshots
+<!-- ## Demo Screenshots
 
 | FAQ | Abilities |
 | --- | --- |
@@ -57,7 +57,7 @@ The bundled dataset is intentionally small, but the runtime path still exercises
 
 | Profile-Conditioned Academic Answer |
 | --- |
-| <img src="docs/assets/08-dual-asking-answer.png" alt="Graduation answer after profile" width="360"> |
+| <img src="docs/assets/08-dual-asking-answer.png" alt="Graduation answer after profile" width="360"> | -->
 
 ## Use
 
