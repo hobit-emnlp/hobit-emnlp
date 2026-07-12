@@ -3,15 +3,61 @@
 Four evaluation tracks were constructed for hoBIT, each targeting a distinct capability
 of the proFILL profile-aware RAG pipeline.
 
-| Track | Size | Purpose |
-|---|---:|---|
-| **Profile-based Indexing** | 951 chunks | Static offline indexing over profile-conditioned document facets (`hobit_static` 689 + `hobit_dynamic` 262) |
-| **Intent Routing** | 1,600 | 5-class routing (greeting / ability / faq / smalltalk / academic) |
-| **Profile-grounded QA** | 1,800 | Verifiable QA under known student profiles |
-| **Open-ended Advising** | 1,200 | Open-ended retrieval quality without ground-truth documents |
+<table>
+  <thead>
+    <tr>
+      <th width="30%">Track</th>
+      <th width="18%">Size</th>
+      <th>Purpose</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><b>Profile-based Indexing</b></td>
+      <td>951 chunks</td>
+      <td>Static offline indexing over profile-conditioned document facets (<code>hobit_static</code> 689 + <code>hobit_dynamic</code> 262)</td>
+    </tr>
+    <tr>
+      <td><b>Intent Routing</b></td>
+      <td>1,600 queries</td>
+      <td>5-class routing (greeting / ability / faq / smalltalk / retrieval)</td>
+    </tr>
+    <tr>
+      <td><b>Profile-grounded QA</b></td>
+      <td>1,800 QA pairs</td>
+      <td>Verifiable QA under known student profiles</td>
+    </tr>
+    <tr>
+      <td><b>Open-ended Advising</b></td>
+      <td>1,200 queries</td>
+      <td>Open-ended retrieval quality without ground-truth documents</td>
+    </tr>
+  </tbody>
+</table>
 
 All datasets were generated with `gpt-4o-mini` (temperature=0.7) using anchors extracted
 from real hoBIT RASA deployment logs (2024–2025) as seed material.
+
+### Availability
+
+This repository ships the demo runtime only. Full evaluation resources are kept
+outside the demo package during the review period for privacy and license reasons,
+but are available on request.
+
+- **Runtime document corpus** is bundled at `backend/data/demo_documents.json` as
+  license-safe curated mock data derived from public university notices. Reviewers
+  can rebuild the Qdrant profile-tagged index from this file end-to-end without any
+  private credentials.
+- **Full evaluation benchmarks** (Intent Routing 1,600 · Profile-grounded QA 1,800 ·
+  Open-ended Advising 1,200) and their **design specifications**
+  (`gt_spec.json`, `rag_no_gt_spec_v3.json`), along with the **reproduction scripts**
+  used to produce every reported number, are available on request. Please open a
+  GitHub issue at
+  [`hobit-emnlp/hobit-emnlp/issues`](https://github.com/hobit-emnlp/hobit-emnlp/issues)
+  and we will share access.
+- **Real deployment logs** used to seed anchor generation are withheld to protect
+  student privacy; only their aggregated statistics (distribution, coverage) are
+  reported.
 
 ---
 
